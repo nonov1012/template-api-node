@@ -48,28 +48,27 @@ export const login = async (req: Request, res: Response) => {
         })
 
         if (!user) {
-            res.status(401).json({ error: "Email not found" })
+            res.status(401).json({ error: "Email incorrect" })
             return
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password)
         if (!isPasswordValid) {
-            res.status(401).json({ error: "Invalid password" })
+            res.status(401).json({ error: "Mot de passe incorrect" })
             return
         }
 
         const token = jwt.sign(
             { userId: user.id, email: user.email },
             process.env.JWT_SECRET as jwt.Secret,
-            { expiresIn: process.env.JWT_EXPIRES_IN },
+            { expiresIn: process.env.JWT_EXPIRES_IN } as jwt.SignOptions,
         )
 
         res.status(200).json({
             token,
-            user: { id: user.id, email: user.email },
-            message: "Login successful",
+            message: "Connexion réussie",
         })
     } catch {
-        res.status(500).json({ error: "Failed to login" })
+        res.status(500).json({ error: "Une erreur est survenue" })
     }
 }

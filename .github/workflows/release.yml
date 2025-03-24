@@ -24,7 +24,7 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
-            # test
+
             - name: Release
               run: HUSKY=0 npx semantic-release
               env:

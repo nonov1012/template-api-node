@@ -24,9 +24,9 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
-
+            # test
             - name: Release
-              run: HUSKY~0 npx semantic-release
+              run: npx semantic-release
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

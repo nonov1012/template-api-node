@@ -1,40 +1,39 @@
 name: Release
 
 on:
-   push:
-      branches: [main]
+    push:
+        branches: [main]
 
 jobs:
-   release:
-      runs-on: ubuntu-latest
-      permissions:
-         contents: write
-         packages: write
-         pull-requests: write
-      steps:
-         - name: Generate token
-           id: generate_token
-           uses: actions/create-github-app-token@v1
-           with:
-              app-id: ${{ secrets.SEMANTIC_BOT_APP_ID }}
-              private-key: ${{ secrets.SEMANTIC_BOT_PRIVATE_KEY }}
+    release:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            packages: write
+            pull-requests: write
+        steps:
+            - name: Generate token
+              id: generate_token
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ secrets.SEMANTIC_BOT_APP_ID }}
+                  private-key: ${{ secrets.SEMANTIC_BOT_PRIVATE_KEY }}
 
-         - name: Checking out code
-           uses: actions/checkout@v4
-           with:
-              fetch-depth: 0
-              persist-credentials: true
-              token: ${{ steps.generate_token.outputs.token }}
+            - name: Checking out code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  persist-credentials: true
+                  token: ${{ steps.generate_token.outputs.token }}
 
-         - name: Setting up Node
-           uses: actions/setup-node@v4
+            - name: Setting up Node
+              uses: actions/setup-node@v4
 
-         - name: Install dependencies
-           run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-         - name: Release
-           run: HUSKY=0 npx semantic-release
-           env:
-              GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-              GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-
+            - name: Release
+              run: HUSKY=0 npx semantic-release
+              env:
+                  GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+                  GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}

@@ -9,18 +9,25 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: write
+            packages: write
+            pull-requests: write
         steps:
+            - name: Generate token
+              id: generate_token
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ secrets.SEMANTIC_BOT_APP_ID }}
+                  private-key: ${{ secrets.SEMANTIC_BOT_PRIVATE_KEY }}
+
             - name: Checking out code
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   persist-credentials: true
-                  token: ${{ secrets.GITHUB_TOKEN }}
+                  token: ${{ steps.generate_token.outputs.token }}
 
             - name: Setting up Node
               uses: actions/setup-node@v4
-              with:
-                  node-version: "latest"
 
             - name: Install dependencies
               run: npm ci
@@ -28,5 +35,5 @@ jobs:
             - name: Release
               run: HUSKY=0 npx semantic-release
               env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+                  GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
